@@ -6,7 +6,7 @@ from blinkt import set_brightness, set_pixel, set_all, show
 import json
 
 # Reading config from json
-with open('../config/wl-conf.json', 'r') as f:
+with open('config.json', 'r') as f:
 	data = json.load(f)
 
 # Set config data
