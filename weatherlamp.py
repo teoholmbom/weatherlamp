@@ -4,6 +4,7 @@ from time import sleep
 from repeatedtimer import *
 from blinkt import set_brightness, set_pixel, set_all, show
 import json
+import time
 
 # Reading config from json
 with open('config.json', 'r') as f:
@@ -28,12 +29,11 @@ brightness = data['brightness']
 currentTemp = 0
 currentCloudCover = 0
 
-
-fio = ForecastIO.ForecastIO(apikey,
-    units = ForecastIO.ForecastIO.UNITS_SI,
-    lang = ForecastIO.ForecastIO.LANG_ENGLISH,
-    latitude = location[0], 
-    longitude = location[1])
+#fio = ForecastIO.ForecastIO(apikey,
+#    units = ForecastIO.ForecastIO.UNITS_SI,
+#    lang = ForecastIO.ForecastIO.LANG_ENGLISH,
+#    latitude = location[0], 
+#    longitude = location[1])
 
 
 def set_pixels(inTemp, inCloudCover = 0):
@@ -65,21 +65,29 @@ def set_pixels(inTemp, inCloudCover = 0):
     show()
 
 def get_weather():
-    if fio.has_currently() is True:
-        currently = FIOCurrently.FIOCurrently(fio)
-        
-		# Set current temperature
-        currentTemp = int(round(currently.temperature))
-        
-        # Set current cloud coverage
-        currentCloudCover = int(round(currently.cloudCover * 100))
-        
-        print "Current temperature: " + str(currentTemp)
-        print "Current cloud coverage: " + str(currentCloudCover)
+	fio	= ForecastIO.ForecastIO(apikey, units = ForecastIO.ForecastIO.UNITS_SI, 
+		lang = ForecastIO.ForecastIO.LANG_ENGLISH, 
+		time = str(int(time.time())),
+		latitude = location[0], 
+		longitude = location[1])
+		
+	print int(time.time())
+	
+	if fio.has_currently() is True:
+		currently = FIOCurrently.FIOCurrently(fio)
 
-        set_pixels(currentTemp, currentCloudCover)
-    else:
-        print 'No Currently data'
+		# Set current temperature
+		currentTemp = int(round(currently.temperature))
+
+		# Set current cloud coverage
+		currentCloudCover = int(round(currently.cloudCover * 100))
+		
+		print "Current temperature: " + str(currentTemp)
+		print "Current cloud coverage: " + str(currentCloudCover)
+
+		set_pixels(currentTemp, currentCloudCover)
+	else:
+		print 'No Currently data'
 
 # Start        
 get_weather()
